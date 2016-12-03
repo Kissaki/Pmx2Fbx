@@ -4,17 +4,17 @@
 
 std::wstring & mbs2wcs(unsigned int codePage, const std::string & strMB, std::wstring & tmpWstr)
 {
-	int len = MultiByteToWideChar(codePage, 0, strMB.c_str(), strMB.size(), 0, 0);
+	int len = MultiByteToWideChar(codePage, 0, strMB.c_str(), static_cast<int>(strMB.size()), 0, 0);
 	tmpWstr.resize(len);
-	MultiByteToWideChar(codePage, 0, strMB.c_str(), strMB.size(), &tmpWstr[0], len);
+	MultiByteToWideChar(codePage, 0, strMB.c_str(), static_cast<int>(strMB.size()), &tmpWstr[0], len);
 	return tmpWstr;
 }
 
 std::string & wcs2mbs(unsigned int codePage, const std::wstring & strWCS, std::string & tmpStr)
 {
-	int len = WideCharToMultiByte(codePage, 0, strWCS.c_str(), strWCS.size(), 0, 0, 0, 0);
+	int len = WideCharToMultiByte(codePage, 0, strWCS.c_str(), static_cast<int>(strWCS.size()), 0, 0, 0, 0);
 	tmpStr.resize(len);
-	WideCharToMultiByte(codePage, 0, strWCS.c_str(), strWCS.size(), &tmpStr[0], len, 0, 0);
+	WideCharToMultiByte(codePage, 0, strWCS.c_str(), static_cast<int>(strWCS.size()), &tmpStr[0], len, 0, 0);
 	return tmpStr;
 }
 

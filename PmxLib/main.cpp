@@ -1,4 +1,3 @@
-#include <vld.h>
 #include <stdio.h>
 #include <windows.h>
 #include "PmxReader.h"
@@ -11,7 +10,7 @@ static void SavePmxToFbx(PmxReader & pmx, const char * strFileName)
 	FbxHelper::Shape * shp = fbx.BeginShape(pmx.ModelName.c_str());
 	{
 		// Ð´Èë¶¥µã
-		shp->InitPositionSize(pmx.VertexList.size());
+		shp->InitPositionSize(static_cast<int>(pmx.VertexList.size()));
 
 		int count = 0;
 		for (auto & item : pmx.VertexList)
@@ -48,7 +47,7 @@ static void SavePmxToFbx(PmxReader & pmx, const char * strFileName)
 			{
 				if (count == 0)
 				{
-					shp->BeginFace(matID);
+					shp->BeginFace(static_cast<int>(matID));
 				}
 
 				shp->AddIndex(pmx.FaceList[currFace]);
@@ -140,7 +139,11 @@ static void * ReadFile(const wchar_t * strFileName, size_t & szFileLen)
 {
 	void * pResult = 0;
 	FILE * fp = 0;
-	_wfopen_s(&fp, strFileName, L"rb");
+	auto err = _wfopen_s(&fp, strFileName, L"rb");
+	if (err)
+	{
+		return 0;
+	}
 	if (fp)
 	{
 		fseek(fp, 0, SEEK_END);
@@ -161,8 +164,8 @@ int wmain(int argc, const wchar_t ** argv)
 	{
 		const wchar_t * strInput = argv[1];
 
-		std::wstring strInputPath;
-		for (int i = wcslen(strInput) - 1; i >= 0; --i)
+		/*std::wstring strInputPath;
+		for (size_t i = wcslen(strInput) - 1; i >= 0; --i)
 		{
 			if (strInput[i] == L'\\')
 			{
@@ -170,7 +173,7 @@ int wmain(int argc, const wchar_t ** argv)
 				SetCurrentDirectoryW(strInputPath.c_str());
 				break;
 			}
-		}
+		}*/
 
 		size_t flen = 0;
 		void * pBuf = ReadFile(strInput, flen);
@@ -182,6 +185,11 @@ int wmain(int argc, const wchar_t ** argv)
 			std::string strFileName;
 			Platform_Utf16To8(strInput, strFileName);
 			SavePmxToFbx(reader, (strFileName + ".fbx").c_str());
+		}
+		else
+		{
+			OutputDebugString(L"Failed to read file");
+			return 1;
 		}
 	}
 	return 0;

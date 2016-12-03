@@ -106,6 +106,9 @@ bool FbxHelper::SaveScene(const char * pFileName, bool pEmbedMedia, int pFileFor
 		FBXSDK_printf("Error returned: %s\n\n", lExporter->GetStatus().GetErrorString());
 		return false;
 	}
+	
+// 2014 for UE4
+//	lExporter->SetFileExportVersion("FBX_2014_00_COMPATIBLE");
 
 	FbxManager::GetFileFormatVersion(lMajor, lMinor, lRevision);
 	FBXSDK_printf("FBX file format version %d.%d.%d\n\n", lMajor, lMinor, lRevision);
